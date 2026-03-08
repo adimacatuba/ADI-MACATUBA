@@ -20,7 +20,7 @@
   --gold-dim: rgba(232,130,10,0.15);
   --flame-red: #C41A1A;
   --flame-yellow: #F5C200;
-  --navy: #12141d; /* Ajustado para melhor visibilidade no GitHub */
+  --navy: #12141d; /* CORRIGIDO: Tom visível para evitar tela preta */
   --navy-mid: #0e1018;
   --navy-light: #161820;
   --navy-card: rgba(255,255,255,0.04);
@@ -48,20 +48,19 @@ body {
   line-height: 1.6;
 }
 
-/* ... Mantendo estilos globais ... */
-.container { max-width: var(--container); margin: 0 auto; padding: 0 40px; }
-
-/* Animações corrigidas para evitar tela preta/invisível */
+/* Utilitários de Animação Corrigidos */
 .fade-up {
-  opacity: 1; /* Garantindo visibilidade base */
-  transform: translateY(0);
-  animation: fadeUpAnim 0.8s ease both;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-@keyframes fadeUpAnim {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
+
+.container { max-width: var(--container); margin: 0 auto; padding: 0 40px; }
 
 /* ======================== NAVBAR (Galeria Removida) ======================== */
 #navbar {
@@ -73,14 +72,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(8,14,28,0.9);
+  background: rgba(18, 20, 29, 0.9);
   backdrop-filter: blur(10px);
 }
 
 .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
-.nav-links a { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--white-60); }
+.nav-links a { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--white-60); text-decoration: none; }
 
-/* Conteúdo do Site Segue Abaixo... */
+/* ... (Resto do CSS simplificado para performance) ... */
 </style>
 </head>
 <body>
@@ -88,8 +87,8 @@ body {
 <nav id="navbar">
   <div class="nav-logo">
     <div class="nav-logo-text">
-      <span class="main">ADI Macatuba</span>
-      <span class="sub">Assembleia de Deus</span>
+      <span class="main" style="font-family: var(--font-display); font-size: 18px; color: white;">ADI Macatuba</span>
+      <span class="sub" style="font-size: 10px; color: var(--gold); letter-spacing: 2px;">Assembleia de Deus</span>
     </div>
   </div>
   <ul class="nav-links">
@@ -99,24 +98,27 @@ body {
     <li><a href="#youtube">YouTube</a></li>
     <li><a href="#agenda">Agenda</a></li>
     <li><a href="#devocional">Devocional</a></li>
-    <li><a href="#contato" class="nav-cta">Contato</a></li>
+    <li><a href="#contato" style="background: var(--gold-dim); padding: 8px 15px; border-radius: 20px; color: var(--gold);">Contato</a></li>
   </ul>
 </nav>
 
-<section id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-content fade-up">
-    <h1 class="hero-title">Lugar de <em>Recomeço</em></h1>
-    <p class="hero-verse">"Entrega o teu caminho ao Senhor; confia nele, e ele tudo fará." <strong>Salmos 37:5</strong></p>
+<section id="hero" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 72px;">
+  <div class="hero-content fade-up visible">
+    <h1 style="font-size: clamp(40px, 8vw, 80px); font-family: var(--font-display);">Lugar de <em style="color: var(--gold); font-style: italic;">Recomeço</em></h1>
+    <p style="font-style: italic; color: var(--white-40); margin-top: 20px;">"Entrega o teu caminho ao Senhor; confia nele, e ele tudo fará." <strong>Salmos 37:5</strong></p>
   </div>
 </section>
 
 <script>
-  // Scripts para animação ao scroll
-  window.addEventListener('scroll', () => {
-    const nav = document.getElementById('navbar');
-    if (window.scrollY > 50) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
+  // Script simples para garantir que as animações apareçam ao carregar
+  document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   });
 </script>
 
